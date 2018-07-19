@@ -33,6 +33,7 @@ int main(int argc,int **argv)
 	if(Bind==-1)
 	{
 		printf("bind fail\r\n");
+		return 0;
 	}
 	printf("bind ok\r\n");
 
@@ -46,8 +47,8 @@ int main(int argc,int **argv)
 	struct sockaddr_in client_addr;
 	socklen_t client_addr_size =sizeof(client_addr);
 
-	while(1)
-	{	
+//	while(1)
+//	{	
 		client_sock = accept(server_sock,(struct sockaddr*)&client_addr,&client_addr_size);
 		if(client_sock==-1)
 		{
@@ -55,15 +56,24 @@ int main(int argc,int **argv)
 		}
 		printf("accept ok\r\n");	
 
-		int Wnum=0;
-	//	scanf("%s\r\n",str);
+	char RECV[40]={0};
+	while(1)
+	{
+		int Wnum=0,Rnum=0;
+		scanf("%s",str);
+		fflush(stdout); 
 		num++;
-		Wnum=write(client_sock,&num,sizeof(num));
+		Wnum=write(client_sock,str,sizeof(str));
 		if(Wnum==-1)
 		{
 			printf("write Fail\r\n");
 		}
-		printf("write ok:%d",num);
+		Rnum=read(client_sock,RECV,sizeof(RECV));
+		if(Rnum!=-1){
+			printf("recv:%s\r\n",RECV);
+			Rnum=0;
+			memset(RECV,0,sizeof(RECV));
+		}
 	}
 	close(client_sock);
 	close(server_sock);
